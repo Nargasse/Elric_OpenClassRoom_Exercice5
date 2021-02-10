@@ -24,7 +24,7 @@ app.use((request, response, next) => { //On contrôle les autorisations CORS
 
 app.use(bodyParser.json());
 
-app.use('/api/sauce', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', authRoutes);
 
 module.exports = app;
