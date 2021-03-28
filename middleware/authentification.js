@@ -14,4 +14,3 @@ module.exports = (request, response, next) => {
         response.status(401).json({ error });
     }
 }
-//THE_DEFINITION_OF_FASCINATION_IS_BROADCASTING_EFFECTIVELY_AT_THE_CROSSING_OF_MY_RESIGNATION

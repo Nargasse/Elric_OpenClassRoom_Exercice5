@@ -1,5 +1,7 @@
 const Sauce = require('../models/sauce');
 const fileSys = require('fs');
+const sauce = require('../models/sauce');
+const { request, response } = require('express');
 
 exports.findAllSauce = (request, response, next) => {
     Sauce.find()
@@ -43,10 +45,13 @@ exports.updateSauce = (request, response, next) => {
     } else {
         sauceObject = { ...request.body };
     }
+
     Sauce.updateOne({ _id: request.params.id }, {...sauceObject, _id: request.params.id})
-    .then(() => response.status(200).json({message: 'Sauce modifiée' }))
-    .catch(() => response.status(400).json({ error }));
+            .then(() => response.status(200).json({message: 'Sauce modifiée' }))
+            .catch(error => response.status(400).json({ error }));
 };
+
+
 
 exports.deleteSauce = (request, response, next) => {
     Sauce.findOne( { _id: request.params.id })
@@ -63,15 +68,11 @@ exports.deleteSauce = (request, response, next) => {
 };
 
 exports.updateLikeStatus = (request, response, next) => {
-    console.log(request.body.userId);
     Sauce.findOne({ _id: request.params.id })
     .then(sauce => {
-        console.log(sauce);
         let newTableauLike = [];
         let newTableauDislike = [];
-        console.log('user like = ' + request.body.like)
         for (let utilisateur of sauce.usersLiked) {
-            console.log(utilisateur + ' ? ' + request.body.userId);
             if (utilisateur == request.body.userId) { //Si on trouve l'utilisateur déjà présent dans le tableau,
                 sauce.likes --; //On enlève un like et on ne le sauvegarde pas dans le nouveau.
             } else {
@@ -102,3 +103,17 @@ exports.updateLikeStatus = (request, response, next) => {
     })
     .catch(error => response.status(500).json({error}));
 };
+
+/*  
+Ce petit snippet de code est pensé pour entouré les requête de suppression et d'update pour vérifier l'utilisateur et interdire l'action si ce n'est pas le bon.
+Néanmoins, cette vérification est déjà faite de façon manifestement efficace par le front, et je penses que la refaire en back rajouterais inutilement de la charge.
+
+    Sauce.findOne({ _id: request.params.id })
+    .then(sauce => {
+        if (sauce.userId == sauceObject.userId) {
+            
+        } else {
+            response.status(403).json({error});
+        }
+    }).catch(error => response.status(404).json({ error }));
+*/

@@ -4,17 +4,18 @@ const router = express.Router();
 const multer = require('../middleware/multer-config');
 const sauceControl = require('../controllers/sauce');
 const auth = require('../middleware/authentification');
+const rateLimiter = require('../middleware/retry-limiter');
 
-router.post('/:id/like', auth, sauceControl.updateLikeStatus);
+router.post('/:id/like', rateLimiter, auth, sauceControl.updateLikeStatus);
 
-router.post('/', auth, multer, sauceControl.addNewSauce);
+router.post('/', rateLimiter, auth, multer, sauceControl.addNewSauce);
 
-router.put('/:id', auth, multer, sauceControl.updateSauce);
+router.put('/:id', rateLimiter, auth, multer, sauceControl.updateSauce);
 
-router.delete('/:id', auth, sauceControl.deleteSauce);
+router.delete('/:id', rateLimiter, auth, sauceControl.deleteSauce);
 
-router.get('/', auth, sauceControl.findAllSauce);
+router.get('/', rateLimiter, auth, sauceControl.findAllSauce);
 
-router.get('/:id', auth, sauceControl.findOneSauce);
+router.get('/:id', rateLimiter, auth, sauceControl.findOneSauce);
 
 module.exports = router;
